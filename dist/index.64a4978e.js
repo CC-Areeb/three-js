@@ -581,6 +581,25 @@ const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 // inject the size (a canvas element) into the html
 document.body.appendChild(renderer.domElement);
+// create the scene
+const scene = new _three.Scene();
+// craete the camera
+const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 // far clipping plane
+);
+const axesHelper = new _three.AxesHelper(5);
+scene.add(axesHelper);
+camera.position.set(0, 2, 5);
+// creaeting a box
+const boxGeometry = new _three.BoxGeometry();
+// box material
+const boxMaterial = new _three.MeshBasicMaterial({
+    color: 0x00FF00
+});
+// add the geometry and the material as the arguments
+const box = new _three.Mesh(boxGeometry, boxMaterial);
+// add the box to the scene
+scene.add(box);
+renderer.render(scene, camera);
 
 },{"three":"ktPTu"}],"ktPTu":[function(require,module,exports) {
 /**
