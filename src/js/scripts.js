@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "stats.js";
 
 // Instance of the WebGL renderer
@@ -25,10 +26,13 @@ const camera = new THREE.PerspectiveCamera(
     1000 // far clipping plane
 );
 
+// create an instance of the orbit controll class
+const orbit = new OrbitControls(camera, renderer.domElement);
+
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
-
 camera.position.set(0, 2, 5);
+orbit.update();
 
 // creating a box
 const boxGeometry = new THREE.BoxGeometry();
@@ -45,10 +49,10 @@ const box = new THREE.Mesh(boxGeometry, boxMaterial);
 scene.add(box);
 
 // Animation function
-function animate() {
+function animate(time) {
     // geometric rotation on x and y axes
-    box.rotation.x += 0.01;
-    box.rotation.y += 0.01;
+    box.rotation.x = time/ 1000;
+    box.rotation.y = time/ 1000;
 
     // Render the scene at a consistent frame rate
     renderer.render(scene, camera);

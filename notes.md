@@ -4,7 +4,7 @@
 
 ### Get started
 
-- Install a package bundler, in this case I am using parcel
+- Install a package bundler, in this case I am using parcel (npm install parcel)
 
 - Make an HTML file and a js file.
 
@@ -31,3 +31,5 @@
 - This type of camera has 6 values, first 4 are the **left, right, top, bottom** and the last 2 are the near and far clipping
     planes.
 - The size of the object does not vary.
+
+### Creating a 3D model 
