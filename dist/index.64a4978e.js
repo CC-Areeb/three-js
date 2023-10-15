@@ -574,22 +574,28 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"goJYj":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _three = require("three");
+var _statsJs = require("stats.js");
+var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
 // Instance of the WebGL renderer
 const renderer = new _three.WebGLRenderer();
 // Set size to actually set the size of the space that web gl will use
 renderer.setSize(window.innerWidth, window.innerHeight);
 // inject the size (a canvas element) into the html
 document.body.appendChild(renderer.domElement);
+// Create a Stats object to track performance
+const stats = new (0, _statsJsDefault.default)();
+document.body.appendChild(stats.dom);
 // create the scene
 const scene = new _three.Scene();
-// craete the camera
+// create the camera
 const camera = new _three.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 // far clipping plane
 );
 const axesHelper = new _three.AxesHelper(5);
 scene.add(axesHelper);
 camera.position.set(0, 2, 5);
-// creaeting a box
+// creating a box
 const boxGeometry = new _three.BoxGeometry();
 // box material
 const boxMaterial = new _three.MeshBasicMaterial({
@@ -599,9 +605,22 @@ const boxMaterial = new _three.MeshBasicMaterial({
 const box = new _three.Mesh(boxGeometry, boxMaterial);
 // add the box to the scene
 scene.add(box);
-renderer.render(scene, camera);
+// Animation function
+function animate() {
+    // geometric rotation on x and y axes
+    box.rotation.x += 0.01;
+    box.rotation.y += 0.01;
+    // Render the scene at a consistent frame rate
+    renderer.render(scene, camera);
+    // Update the Stats object on every frame
+    stats.update();
+    // Call the animate function in a loop
+    requestAnimationFrame(animate);
+}
+// Start the animation loop
+animate();
 
-},{"three":"ktPTu"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","stats.js":"9lwC6","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -30643,6 +30662,91 @@ exports.export = function(dest, destName, get) {
         get: get
     });
 };
+
+},{}],"9lwC6":[function(require,module,exports) {
+// stats.js - http://github.com/mrdoob/stats.js
+(function(f, e) {
+    module.exports = e();
+})(this, function() {
+    var f = function() {
+        function e(a) {
+            c.appendChild(a.dom);
+            return a;
+        }
+        function u(a) {
+            for(var d = 0; d < c.children.length; d++)c.children[d].style.display = d === a ? "block" : "none";
+            l = a;
+        }
+        var l = 0, c = document.createElement("div");
+        c.style.cssText = "position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";
+        c.addEventListener("click", function(a) {
+            a.preventDefault();
+            u(++l % c.children.length);
+        }, !1);
+        var k = (performance || Date).now(), g = k, a = 0, r = e(new f.Panel("FPS", "#0ff", "#002")), h = e(new f.Panel("MS", "#0f0", "#020"));
+        if (self.performance && self.performance.memory) var t = e(new f.Panel("MB", "#f08", "#201"));
+        u(0);
+        return {
+            REVISION: 16,
+            dom: c,
+            addPanel: e,
+            showPanel: u,
+            begin: function() {
+                k = (performance || Date).now();
+            },
+            end: function() {
+                a++;
+                var c = (performance || Date).now();
+                h.update(c - k, 200);
+                if (c > g + 1E3 && (r.update(1E3 * a / (c - g), 100), g = c, a = 0, t)) {
+                    var d = performance.memory;
+                    t.update(d.usedJSHeapSize / 1048576, d.jsHeapSizeLimit / 1048576);
+                }
+                return c;
+            },
+            update: function() {
+                k = this.end();
+            },
+            domElement: c,
+            setMode: u
+        };
+    };
+    f.Panel = function(e, f, l) {
+        var c = Infinity, k = 0, g = Math.round, a = g(window.devicePixelRatio || 1), r = 80 * a, h = 48 * a, t = 3 * a, v = 2 * a, d = 3 * a, m = 15 * a, n = 74 * a, p = 30 * a, q = document.createElement("canvas");
+        q.width = r;
+        q.height = h;
+        q.style.cssText = "width:80px;height:48px";
+        var b = q.getContext("2d");
+        b.font = "bold " + 9 * a + "px Helvetica,Arial,sans-serif";
+        b.textBaseline = "top";
+        b.fillStyle = l;
+        b.fillRect(0, 0, r, h);
+        b.fillStyle = f;
+        b.fillText(e, t, v);
+        b.fillRect(d, m, n, p);
+        b.fillStyle = l;
+        b.globalAlpha = .9;
+        b.fillRect(d, m, n, p);
+        return {
+            dom: q,
+            update: function(h, w) {
+                c = Math.min(c, h);
+                k = Math.max(k, h);
+                b.fillStyle = l;
+                b.globalAlpha = 1;
+                b.fillRect(0, 0, r, m);
+                b.fillStyle = f;
+                b.fillText(g(h) + " " + e + " (" + g(c) + "-" + g(k) + ")", t, v);
+                b.drawImage(q, d + a, m, n - a, p, d, m, n - a, p);
+                b.fillRect(d + n - a, m, a, p);
+                b.fillStyle = l;
+                b.globalAlpha = .9;
+                b.fillRect(d + n - a, m, a, g((1 - h / w) * p));
+            }
+        };
+    };
+    return f;
+});
 
 },{}]},["6CUmf","goJYj"], "goJYj", "parcelRequiredd4a")
 
