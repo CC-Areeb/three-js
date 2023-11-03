@@ -142,7 +142,7 @@
       this[globalName] = mainExports;
     }
   }
-})({"6CUmf":[function(require,module,exports) {
+})({"ciGIJ":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -227,9 +227,15 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
     var hostname = getHostname();
     var port = getPort();
     var protocol = HMR_SECURE || location.protocol == "https:" && !/localhost|127.0.0.1|0.0.0.0/.test(hostname) ? "wss" : "ws";
-    var ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/");
+    var ws;
+    try {
+        ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/");
+    } catch (err) {
+        if (err.message) console.error(err.message);
+        ws = {};
+    }
     // Web extension context
-    var extCtx = typeof chrome === "undefined" ? typeof browser === "undefined" ? null : browser : chrome;
+    var extCtx = typeof browser === "undefined" ? typeof chrome === "undefined" ? null : chrome : browser;
     // Safari doesn't support sourceURL in error stacks.
     // eval may also be disabled via CSP, so do a quick check.
     var supportsSourceURL = false;
@@ -293,7 +299,7 @@ if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
         }
     };
     ws.onerror = function(e) {
-        console.error(e.message);
+        if (e.message) console.error(e.message);
     };
     ws.onclose = function() {
         console.warn("[parcel] \uD83D\uDEA8 Connection to the HMR server was lost");
@@ -303,7 +309,7 @@ function removeErrorOverlay() {
     var overlay = document.getElementById(OVERLAY_ID);
     if (overlay) {
         overlay.remove();
-        console.log("[parcel] ✨ Error resolved");
+        console.log("[parcel] \u2728 Error resolved");
     }
 }
 function createErrorOverlay(diagnostics) {
@@ -319,13 +325,13 @@ ${frame.code}`;
         errorHTML += `
       <div>
         <div style="font-size: 18px; font-weight: bold; margin-top: 20px;">
-          🚨 ${diagnostic.message}
+          \u{1F6A8} ${diagnostic.message}
         </div>
         <pre>${stack}</pre>
         <div>
           ${diagnostic.hints.map((hint)=>"<div>\uD83D\uDCA1 " + hint + "</div>").join("")}
         </div>
-        ${diagnostic.documentation ? `<div>📝 <a style="color: violet" href="${diagnostic.documentation}" target="_blank">Learn more</a></div>` : ""}
+        ${diagnostic.documentation ? `<div>\u{1F4DD} <a style="color: violet" href="${diagnostic.documentation}" target="_blank">Learn more</a></div>` : ""}
       </div>
     `;
     }
@@ -421,15 +427,10 @@ async function hmrApplyUpdates(assets) {
             let promises = assets.map((asset)=>{
                 var _hmrDownload;
                 return (_hmrDownload = hmrDownload(asset)) === null || _hmrDownload === void 0 ? void 0 : _hmrDownload.catch((err)=>{
-                    // Web extension bugfix for Chromium
-                    // https://bugs.chromium.org/p/chromium/issues/detail?id=1255412#c12
-                    if (extCtx && extCtx.runtime && extCtx.runtime.getManifest().manifest_version == 3) {
-                        if (typeof ServiceWorkerGlobalScope != "undefined" && global instanceof ServiceWorkerGlobalScope) {
-                            extCtx.runtime.reload();
-                            return;
-                        }
-                        asset.url = extCtx.runtime.getURL("/__parcel_hmr_proxy__?url=" + encodeURIComponent(asset.url + "?t=" + Date.now()));
-                        return hmrDownload(asset);
+                    // Web extension fix
+                    if (extCtx && extCtx.runtime && extCtx.runtime.getManifest().manifest_version == 3 && typeof ServiceWorkerGlobalScope != "undefined" && global instanceof ServiceWorkerGlobalScope) {
+                        extCtx.runtime.reload();
+                        return;
                     }
                     throw err;
                 });
@@ -624,7 +625,7 @@ function animate(time) {
 // Start the animation loop
 animate();
 
-},{"three":"ktPTu","stats.js":"9lwC6","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW","three/examples/jsm/controls/OrbitControls.js":"7mqRv"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","stats.js":"9lwC6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -30637,7 +30638,7 @@ if (typeof window !== "undefined") {
     else window.__THREE__ = REVISION;
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"8f7LW":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -30666,91 +30667,6 @@ exports.export = function(dest, destName, get) {
         get: get
     });
 };
-
-},{}],"9lwC6":[function(require,module,exports) {
-// stats.js - http://github.com/mrdoob/stats.js
-(function(f, e) {
-    module.exports = e();
-})(this, function() {
-    var f = function() {
-        function e(a) {
-            c.appendChild(a.dom);
-            return a;
-        }
-        function u(a) {
-            for(var d = 0; d < c.children.length; d++)c.children[d].style.display = d === a ? "block" : "none";
-            l = a;
-        }
-        var l = 0, c = document.createElement("div");
-        c.style.cssText = "position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";
-        c.addEventListener("click", function(a) {
-            a.preventDefault();
-            u(++l % c.children.length);
-        }, !1);
-        var k = (performance || Date).now(), g = k, a = 0, r = e(new f.Panel("FPS", "#0ff", "#002")), h = e(new f.Panel("MS", "#0f0", "#020"));
-        if (self.performance && self.performance.memory) var t = e(new f.Panel("MB", "#f08", "#201"));
-        u(0);
-        return {
-            REVISION: 16,
-            dom: c,
-            addPanel: e,
-            showPanel: u,
-            begin: function() {
-                k = (performance || Date).now();
-            },
-            end: function() {
-                a++;
-                var c = (performance || Date).now();
-                h.update(c - k, 200);
-                if (c > g + 1E3 && (r.update(1E3 * a / (c - g), 100), g = c, a = 0, t)) {
-                    var d = performance.memory;
-                    t.update(d.usedJSHeapSize / 1048576, d.jsHeapSizeLimit / 1048576);
-                }
-                return c;
-            },
-            update: function() {
-                k = this.end();
-            },
-            domElement: c,
-            setMode: u
-        };
-    };
-    f.Panel = function(e, f, l) {
-        var c = Infinity, k = 0, g = Math.round, a = g(window.devicePixelRatio || 1), r = 80 * a, h = 48 * a, t = 3 * a, v = 2 * a, d = 3 * a, m = 15 * a, n = 74 * a, p = 30 * a, q = document.createElement("canvas");
-        q.width = r;
-        q.height = h;
-        q.style.cssText = "width:80px;height:48px";
-        var b = q.getContext("2d");
-        b.font = "bold " + 9 * a + "px Helvetica,Arial,sans-serif";
-        b.textBaseline = "top";
-        b.fillStyle = l;
-        b.fillRect(0, 0, r, h);
-        b.fillStyle = f;
-        b.fillText(e, t, v);
-        b.fillRect(d, m, n, p);
-        b.fillStyle = l;
-        b.globalAlpha = .9;
-        b.fillRect(d, m, n, p);
-        return {
-            dom: q,
-            update: function(h, w) {
-                c = Math.min(c, h);
-                k = Math.max(k, h);
-                b.fillStyle = l;
-                b.globalAlpha = 1;
-                b.fillRect(0, 0, r, m);
-                b.fillStyle = f;
-                b.fillText(g(h) + " " + e + " (" + g(c) + "-" + g(k) + ")", t, v);
-                b.drawImage(q, d + a, m, n - a, p, d, m, n - a, p);
-                b.fillRect(d + n - a, m, a, p);
-                b.fillStyle = l;
-                b.globalAlpha = .9;
-                b.fillRect(d + n - a, m, a, g((1 - h / w) * p));
-            }
-        };
-    };
-    return f;
-});
 
 },{}],"7mqRv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -31496,6 +31412,91 @@ class OrbitControls extends (0, _three.EventDispatcher) {
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["6CUmf","goJYj"], "goJYj", "parcelRequiredd4a")
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9lwC6":[function(require,module,exports) {
+// stats.js - http://github.com/mrdoob/stats.js
+(function(f, e) {
+    module.exports = e();
+})(this, function() {
+    var f = function() {
+        function e(a) {
+            c.appendChild(a.dom);
+            return a;
+        }
+        function u(a) {
+            for(var d = 0; d < c.children.length; d++)c.children[d].style.display = d === a ? "block" : "none";
+            l = a;
+        }
+        var l = 0, c = document.createElement("div");
+        c.style.cssText = "position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000";
+        c.addEventListener("click", function(a) {
+            a.preventDefault();
+            u(++l % c.children.length);
+        }, !1);
+        var k = (performance || Date).now(), g = k, a = 0, r = e(new f.Panel("FPS", "#0ff", "#002")), h = e(new f.Panel("MS", "#0f0", "#020"));
+        if (self.performance && self.performance.memory) var t = e(new f.Panel("MB", "#f08", "#201"));
+        u(0);
+        return {
+            REVISION: 16,
+            dom: c,
+            addPanel: e,
+            showPanel: u,
+            begin: function() {
+                k = (performance || Date).now();
+            },
+            end: function() {
+                a++;
+                var c = (performance || Date).now();
+                h.update(c - k, 200);
+                if (c > g + 1E3 && (r.update(1E3 * a / (c - g), 100), g = c, a = 0, t)) {
+                    var d = performance.memory;
+                    t.update(d.usedJSHeapSize / 1048576, d.jsHeapSizeLimit / 1048576);
+                }
+                return c;
+            },
+            update: function() {
+                k = this.end();
+            },
+            domElement: c,
+            setMode: u
+        };
+    };
+    f.Panel = function(e, f, l) {
+        var c = Infinity, k = 0, g = Math.round, a = g(window.devicePixelRatio || 1), r = 80 * a, h = 48 * a, t = 3 * a, v = 2 * a, d = 3 * a, m = 15 * a, n = 74 * a, p = 30 * a, q = document.createElement("canvas");
+        q.width = r;
+        q.height = h;
+        q.style.cssText = "width:80px;height:48px";
+        var b = q.getContext("2d");
+        b.font = "bold " + 9 * a + "px Helvetica,Arial,sans-serif";
+        b.textBaseline = "top";
+        b.fillStyle = l;
+        b.fillRect(0, 0, r, h);
+        b.fillStyle = f;
+        b.fillText(e, t, v);
+        b.fillRect(d, m, n, p);
+        b.fillStyle = l;
+        b.globalAlpha = .9;
+        b.fillRect(d, m, n, p);
+        return {
+            dom: q,
+            update: function(h, w) {
+                c = Math.min(c, h);
+                k = Math.max(k, h);
+                b.fillStyle = l;
+                b.globalAlpha = 1;
+                b.fillRect(0, 0, r, m);
+                b.fillStyle = f;
+                b.fillText(g(h) + " " + e + " (" + g(c) + "-" + g(k) + ")", t, v);
+                b.drawImage(q, d + a, m, n - a, p, d, m, n - a, p);
+                b.fillRect(d + n - a, m, a, p);
+                b.fillStyle = l;
+                b.globalAlpha = .9;
+                b.fillRect(d + n - a, m, a, g((1 - h / w) * p));
+            }
+        };
+    };
+    return f;
+});
+
+},{}]},["ciGIJ","goJYj"], "goJYj", "parcelRequiredd4a")
 
 //# sourceMappingURL=index.64a4978e.js.map
