@@ -633,7 +633,8 @@ const gui = new _datGui.GUI();
 // Definig options for out sphere object
 const options = {
     sphereColor: "#ccccff",
-    wireframe: false
+    wireframe: false,
+    speed: 0.01
 };
 // some fucntions that will allow us to toggle few properties
 const changeColor = (event)=>{
@@ -646,14 +647,20 @@ const changeWireFrame = (event)=>{
 gui.addColor(options, "sphereColor").onChange(changeColor);
 // adding wireframe toggling option 
 gui.add(options, "wireframe").onChange(changeWireFrame);
+// adding bouncing feature
+gui.add(options, "speed", 0, 0.5);
 // Adding a grid helper
 const gridHelper = new _three.GridHelper(30); // pass in values to change the surface of the grid
 scene.add(gridHelper);
+let step = 0;
 // Animation function
 function animate(time) {
     // geometric rotation on x and y axes
     box.rotation.x = time / 1000;
     box.rotation.y = time / 1000;
+    // make the sphere bounce
+    step += options.speed;
+    sphere.position.y = 10 * Math.abs(Math.sin(step));
     // Render the scene at a consistent frame rate
     renderer.render(scene, camera);
     // Update the Stats object on every frame

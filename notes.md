@@ -1,9 +1,9 @@
-# Three js
+### Three js
 
 - this is an open source library used for 3d modeling and rendering and this streamlines the process by abstracting the WebGL to
     use it in a much easier way possible
 
-## Get started
+### Get started
 
 - Install a package bundler, in this case I am using parcel (npm install parcel)
 
@@ -17,7 +17,7 @@
 - To allow parcel to always watch the file after every saved change, type this command `parcel ./src/index.html`. Simply just
     use the keyword parcel and then the path to your root html file where the scripts are being loaded.
 
-### Before we start
+### Getting started
 
 - first to record something using three js, we need to first have a scene, a camera, components like objects in the scene.
 
@@ -58,3 +58,34 @@ scene.add(box);
 - The second line is the material or the skin that our geometry will be covered with
 - The third line is the fusion between the skeleton and the skin to make a 3D object. Mesh in a 3D world is an object, It can be anything from shapes to a human character.
 - The last line is used to add the mesh (object) to the scene or the canvas that we have.
+
+### Types of mesh material
+
+- Mesh Basic Material where you require no light source so as the color is already being shown and reflected
+- Mesh Lambert Material and Mesh Standard Material where you will need to have a light source to show the color of the object.
+
+### The Dat GUI package
+
+- To get features that allow us to toggle things like wireframes, or change color or make the object move we can use this package.
+- First install the dat.gui by using this command `npm install dat.gui`.
+- Then import it on the top and the use its given methods to add features.
+
+### Code Example
+
+```JavsScript
+const gui = new dat.GUI();
+const options = {
+    sphereColor: '#ccccff',
+    wireframe: false,
+    speed: 0.01
+};
+const changeColor = (event) => {
+    sphere.material.color.set(event)
+}
+const changeWireFrame = (event) => {
+    sphere.material.wireframe = event;
+}
+gui.addColor(options, 'sphereColor').onChange(changeColor); 
+gui.add(options, 'wireframe').onChange(changeWireFrame);
+gui.add(options, 'speed', 0, 0.5);
+```
