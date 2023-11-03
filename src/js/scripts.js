@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "stats.js";
+import * as dat from "dat.gui";
 
 // Instance of the WebGL renderer
 const renderer = new THREE.WebGLRenderer();
@@ -20,7 +21,7 @@ const scene = new THREE.Scene();
 
 // create the camera
 const camera = new THREE.PerspectiveCamera(
-    75, // FOV
+    45, // FOV
     window.innerWidth / window.innerHeight, // Aspect ratio
     0.1, // near clipping plane
     1000 // far clipping plane
@@ -31,7 +32,7 @@ const orbit = new OrbitControls(camera, renderer.domElement);
 
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
-camera.position.set(0, 2, 5);
+camera.position.set(-10, 30, 30);
 orbit.update();
 
 // creating a box
@@ -48,11 +49,58 @@ const box = new THREE.Mesh(boxGeometry, boxMaterial);
 // add the box to the scene
 scene.add(box);
 
+
+// Adding a plane
+const planeGeometry = new THREE.PlaneGeometry(30, 30);
+const planeMaterial = new THREE.MeshBasicMaterial({
+    color: 0xFFFFFF,
+    side: THREE.DoubleSide
+});
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+scene.add(plane);
+plane.rotation.x = -0.5 * Math.PI;
+
+// Adding a sphere
+const sphereGeometry = new THREE.SphereGeometry(4); // 4 is the radius of the sphere
+const sphereMaterial = new THREE.MeshBasicMaterial({
+    color: 0xFFFF00,
+    // wireframe: true
+});
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+scene.add(sphere);
+sphere.position.set(10, 10, 0);
+
+// Instantiating the GUI here
+const gui = new dat.GUI();
+
+// Definig options for out sphere object
+const options = {
+    sphereColor: '#ccccff',
+    wireframe: false,
+};
+
+// some fucntions that will allow us to toggle few properties
+const changeColor = (event) => {
+    sphere.material.color.set(event)
+}
+const changeWireFrame = (event) => {
+    sphere.material.wireframe = event;
+}
+// using addColor to get a html color picker
+gui.addColor(options, 'sphereColor').onChange(changeColor);
+// adding wireframe toggling option 
+gui.add(options, 'wireframe').onChange(changeWireFrame);
+
+
+// Adding a grid helper
+const gridHelper = new THREE.GridHelper(30); // pass in values to change the surface of the grid
+scene.add(gridHelper);
+
 // Animation function
 function animate(time) {
     // geometric rotation on x and y axes
-    box.rotation.x = time/ 1000;
-    box.rotation.y = time/ 1000;
+    box.rotation.x = time / 1000;
+    box.rotation.y = time / 1000;
 
     // Render the scene at a consistent frame rate
     renderer.render(scene, camera);
