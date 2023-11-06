@@ -583,6 +583,8 @@ var _statsJsDefault = parcelHelpers.interopDefault(_statsJs);
 var _datGui = require("dat.gui");
 // Instance of the WebGL renderer
 const renderer = new _three.WebGLRenderer();
+// enable shows of the renderer (by default it's false)
+renderer.shadowMap.enabled = true;
 // Set size to actually set the size of the space that web gl will use
 renderer.setSize(window.innerWidth, window.innerHeight);
 // inject the size (a canvas element) into the html
@@ -613,27 +615,50 @@ const box = new _three.Mesh(boxGeometry, boxMaterial);
 scene.add(box);
 // Adding a plane
 const planeGeometry = new _three.PlaneGeometry(30, 30);
-const planeMaterial = new _three.MeshBasicMaterial({
-    color: 0xFFFFFF,
+const planeMaterial = new _three.MeshStandardMaterial({
+    color: "#ffffff",
     side: _three.DoubleSide
 });
 const plane = new _three.Mesh(planeGeometry, planeMaterial);
 scene.add(plane);
 plane.rotation.x = -0.5 * Math.PI;
+plane.receiveShadow = true;
 // Adding a sphere
 const sphereGeometry = new _three.SphereGeometry(4); // 4 is the radius of the sphere
-const sphereMaterial = new _three.MeshBasicMaterial({
-    color: 0xFFFF00,
-    wireframe: true
+const sphereMaterial = new _three.MeshStandardMaterial({
+    color: 0x5550a2,
+    wireframe: false
 });
 const sphere = new _three.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
-sphere.position.set(10, 10, 0);
+sphere.position.set(-10, 10, 0);
+sphere.castShadow = true;
+// adding ambient light
+const ambientLight = new _three.AmbientLight("#ffffff");
+scene.add(ambientLight);
+// // adding directional light
+// const directionalLight = new THREE.DirectionalLight('#FFFFFF', 0.8);
+// scene.add(directionalLight);
+// directionalLight.position.set(-30, 50, 0);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.camera.bottom = -12;
+// // adding dierctional light helper
+// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+// scene.add(directionalLightHelper);
+// // directional light shadow helper
+// const directionalLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(directionalLightShadowHelper);
+const spotLight = new _three.SpotLight("#ffffff");
+scene.add(spotLight);
+spotLight.position.set(-20, 20, 0);
+spotLight.castShadow = true;
+const spotLightHelper = new _three.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
 // Instantiating the GUI here
 const gui = new _datGui.GUI();
 // Definig options for out sphere object
 const options = {
-    sphereColor: "#ccccff",
+    sphereColor: "#ffea00",
     wireframe: false,
     speed: 0.01
 };

@@ -6,6 +6,9 @@ import * as dat from "dat.gui";
 // Instance of the WebGL renderer
 const renderer = new THREE.WebGLRenderer();
 
+// enable shows of the renderer (by default it's false)
+renderer.shadowMap.enabled = true;
+
 // Set size to actually set the size of the space that web gl will use
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -51,30 +54,57 @@ scene.add(box);
 
 // Adding a plane
 const planeGeometry = new THREE.PlaneGeometry(30, 30);
-const planeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xFFFFFF,
+const planeMaterial = new THREE.MeshStandardMaterial({
+    color: '#ffffff',
     side: THREE.DoubleSide
 });
 const plane = new THREE.Mesh(planeGeometry, planeMaterial);
 scene.add(plane);
 plane.rotation.x = -0.5 * Math.PI;
-
+plane.receiveShadow = true;
 // Adding a sphere
 const sphereGeometry = new THREE.SphereGeometry(4); // 4 is the radius of the sphere
-const sphereMaterial = new THREE.MeshBasicMaterial({
-    color: 0xFFFF00,
-    wireframe: true
+const sphereMaterial = new THREE.MeshStandardMaterial({
+    color: 0x5550a2,
+    wireframe: false
 });
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
-sphere.position.set(10, 10, 0);
+sphere.position.set(-10, 10, 0);
+sphere.castShadow = true;
+
+// adding ambient light
+const ambientLight = new THREE.AmbientLight('#ffffff');
+scene.add(ambientLight);
+
+
+// // adding directional light
+// const directionalLight = new THREE.DirectionalLight('#FFFFFF', 0.8);
+// scene.add(directionalLight);
+// directionalLight.position.set(-30, 50, 0);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.camera.bottom = -12;
+// // adding dierctional light helper
+// const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+// scene.add(directionalLightHelper);
+// // directional light shadow helper
+// const directionalLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(directionalLightShadowHelper);
+
+
+const spotLight = new THREE.SpotLight('#ffffff');
+scene.add(spotLight);
+spotLight.position.set(-20, 20, 0);
+spotLight.castShadow = true;
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
 
 // Instantiating the GUI here
 const gui = new dat.GUI();
 
 // Definig options for out sphere object
 const options = {
-    sphereColor: '#ccccff',
+    sphereColor: '#ffea00',
     wireframe: false,
     speed: 0.01
 };
@@ -108,7 +138,6 @@ function animate(time) {
     // make the sphere bounce
     step += options.speed;
     sphere.position.y = 10 * Math.abs(Math.sin(step));
-
 
     // Render the scene at a consistent frame rate
     renderer.render(scene, camera);
