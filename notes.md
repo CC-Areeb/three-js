@@ -1,22 +1,3 @@
-### Three js
-
-- this is an open source library used for 3d modeling and rendering and this streamlines the process by abstracting the WebGL to
-    use it in a much easier way possible
-
-### Get started
-
-- Install a package bundler, in this case I am using parcel (npm install parcel)
-
-- Make an HTML file and a js file.
-
-- Render the js file inside the html file (`<script src="./js/scripts.js" type="module"></script>`). Use module to allow the
-    use of keywords like import when trying to use the three js resources.
-
-- Check the scripts.js to see how we get started
-
-- To allow parcel to always watch the file after every saved change, type this command `parcel ./src/index.html`. Simply just
-    use the keyword parcel and then the path to your root html file where the scripts are being loaded.
-
 ### Getting started
 
 - first to record something using three js, we need to first have a scene, a camera, components like objects in the scene.
@@ -89,3 +70,10 @@ gui.addColor(options, 'sphereColor').onChange(changeColor);
 gui.add(options, 'wireframe').onChange(changeWireFrame);
 gui.add(options, 'speed', 0, 0.5);
 ```
+
+### Lighting and types
+
+- We use lighting to illuminate our scene so that we can show the model, objects and how they are working or interacting.
+- Ambient Light which comes from the environment (Example is the light in your room).
+- Directional Light in which there is a source of light and it covers the entire plane (Example is sunlight).
+- Spot Light in which light is being emitted in a form of a cone. The cone radius increases as futher it goes away from the plane.

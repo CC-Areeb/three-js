@@ -63,7 +63,7 @@ plane.rotation.x = -0.5 * Math.PI;
 const sphereGeometry = new THREE.SphereGeometry(4); // 4 is the radius of the sphere
 const sphereMaterial = new THREE.MeshBasicMaterial({
     color: 0xFFFF00,
-    // wireframe: true
+    wireframe: true
 });
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 scene.add(sphere);
